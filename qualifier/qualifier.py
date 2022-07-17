@@ -19,6 +19,7 @@ class RestaurantManager:
         to get the system working before the day starts here; we have
         already defined a staff dictionary.
         """
+
         self.staff = {}
 
     async def __call__(self, request: Request):
