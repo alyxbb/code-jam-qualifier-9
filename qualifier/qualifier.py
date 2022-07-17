@@ -13,7 +13,7 @@ class Request:
 class RestaurantManager:
     def __init__(self):
 
-
+        self.specialties={}
         self.staff = {}
 
     async def __call__(self, request: Request):
@@ -29,12 +29,15 @@ class RestaurantManager:
         match request.scope["type"]:
             case "staff.onduty":
                 self.staff[request.scope["id"]] = request
+                specialties = list(self.specialties.keys())
+                for speciality in request.scope["speciality"]:
+                    if speciality not in specialties:
+                        self.specialties[speciality] = request.scope["id"]
             case "staff.offduty":
                 self.staff.pop(request.scope["id"])
             case "order":
-                staffkeys=list(self.staff.keys())
-                found=self.staff[staffkeys[0]]
+                staff= self.staff[self.specialties[request.scope["speciality"]]]
                 full_order= await request.receive()
-                await found.send(full_order)
-                result=await found.receive()
+                await staff.send(full_order)
+                result=await staff.receive()
                 await request.send(result)
