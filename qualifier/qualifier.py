@@ -12,13 +12,7 @@ class Request:
 
 class RestaurantManager:
     def __init__(self):
-        """Instantiate the restaurant manager.
 
-        This is called at the start of each day before any staff get on
-        duty or any orders come in. You should do any setup necessary
-        to get the system working before the day starts here; we have
-        already defined a staff dictionary.
-        """
 
         self.staff = {}
 
@@ -32,4 +26,8 @@ class RestaurantManager:
             Request object containing information about the sent
             request to your application.
         """
-        ...
+        match request.scope["type"]:
+            case "staff.onduty":
+                self.staff[request.scope["id"]] = request
+            case "staff.offduty":
+                self.staff.pop(request.scope["id"])
