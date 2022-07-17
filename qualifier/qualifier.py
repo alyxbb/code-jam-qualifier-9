@@ -31,3 +31,10 @@ class RestaurantManager:
                 self.staff[request.scope["id"]] = request
             case "staff.offduty":
                 self.staff.pop(request.scope["id"])
+            case "order":
+                staffkeys=list(self.staff.keys())
+                found=self.staff[staffkeys[0]]
+                full_order= await request.receive()
+                await found.send(full_order)
+                result=await found.receive()
+                await request.send(result)
